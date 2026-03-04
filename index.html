@@ -139,7 +139,6 @@ body::before{
     to{transform:translateY(100vh)}
 }
 
-/* Responsive */
 @media(max-width:420px){
     .card{
         width:90%;
@@ -176,34 +175,28 @@ body::before{
 
 <script>
 
-/* ===== Custom Name ===== */
+/* Custom Name */
 const params = new URLSearchParams(window.location.search);
 const name = params.get("name");
 if(name){
     document.getElementById("receiverName").innerText = "Gửi " + name + " ❤️";
 }
 
-/* ===== FIX iOS DOUBLE TAP ===== */
+/* FIX iPhone double trigger */
 const card = document.getElementById("loveCard");
 let opened = false;
 
-function openCard(){
+card.addEventListener("pointerup", function(){
+
     if(opened) return;
+
     opened = true;
     card.classList.add("open");
     createHearts();
-}
 
-card.addEventListener("touchstart", function(e){
-    e.preventDefault();
-    openCard();
-},{ passive:false });
-
-card.addEventListener("click", function(){
-    openCard();
 });
 
-/* ===== Hearts ===== */
+/* Hearts */
 function createHearts(){
     for(let i=0;i<15;i++){
         const heart = document.createElement("div");
@@ -218,7 +211,7 @@ function createHearts(){
     }
 }
 
-/* ===== Petals ===== */
+/* Petals */
 function createPetal(){
     const petal=document.createElement("div");
     petal.className="petal";
