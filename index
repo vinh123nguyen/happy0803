@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy 8/03</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+.wrapper{
+    min-height:100vh;
+    background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    position:relative;
+    padding:20px;
+}
+
+/* Hoa rơi */
+.flower{
+    position:absolute;
+    top:-10px;
+    font-size:20px;
+    animation:fall linear infinite;
+    opacity:.85;
+}
+@keyframes fall{
+    0%{transform:translateY(0) rotate(0deg);}
+    100%{transform:translateY(110vh) rotate(360deg);}
+}
+
+/* Card */
+.card-container{
+    perspective:1500px;
+    width:100%;
+    max-width:400px;
+}
+
+.card{
+    width:100%;
+    height:280px;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform .8s ease;
+    cursor:pointer;
+}
+
+.card.open{
+    transform:rotateY(180deg);
+}
+
+.card-face{
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius:22px;
+    backface-visibility:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px 20px;
+    text-align:center;
+}
+
+.front{
+    background:#ff4d6d;
+    color:white;
+    font-size:24px;
+    font-weight:700;
+}
+
+.back{
+    background:white;
+    transform:rotateY(180deg);
+    flex-direction:column;
+}
+
+.back h2{
+    color:#ff4d6d;
+    margin-bottom:10px;
+    font-size:20px;
+}
+
+.back p{
+    font-size:15px;
+    line-height:1.6;
+    color:#555;
+}
+
+.signature{
+    margin-top:15px;
+    font-weight:500;
+    color:#ff4d6d;
+}
+
+/* Tim bay */
+.heart{
+    position:absolute;
+    color:#ff4d6d;
+    font-size:20px;
+    animation:fly 3s linear forwards;
+}
+@keyframes fly{
+    0%{transform:translateY(0) scale(.5);opacity:1;}
+    100%{transform:translateY(-250px) scale(1.6);opacity:0;}
+}
+
+/* Hint */
+.hint{
+    position:absolute;
+    bottom:25px;
+    color:white;
+    font-size:13px;
+    opacity:.85;
+}
+
+/* Responsive */
+@media(max-width:480px){
+
+    .wrapper{
+        padding:15px;
+    }
+
+    .card{
+        height:300px;
+    }
+
+    .front{
+        font-size:20px;
+    }
+
+    .back h2{
+        font-size:18px;
+    }
+
+    .back p{
+        font-size:14px;
+    }
+
+    .hint{
+        font-size:12px;
+        bottom:20px;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <div class="card-container">
+        <div class="card" id="loveCard">
+            <div class="card-face front">
+                💌 Happy 8/03 💌
+            </div>
+
+            <div class="card-face back">
+                <h2 id="receiverName">Chúc em 8/03 vui vẻ 🌸</h2>
+                <p>
+                    Mong rằng mỗi ngày của em đều tràn đầy niềm vui,
+                    luôn rạng rỡ như ánh nắng ban mai
+                    và hạnh phúc theo cách riêng của mình 💖
+                </p>
+                <div class="signature">
+                    — Vinh 💘
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hint">Chạm vào thiệp để mở 💝</div>
+
+</div>
+
+<audio id="bgMusic" autoplay loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+/* ===== LẤY TÊN TỪ QUERY STRING ===== */
+const params = new URLSearchParams(window.location.search);
+let name = params.get("name");
+if(!name || name.trim()===""){
+    name="Em";
+}
+document.getElementById("receiverName").innerText=
+    "Chúc " + name + " 8/03 vui vẻ 🌸";
+
+/* ===== FIX AUTOPLAY MOBILE ===== */
+document.addEventListener("pointerdown",function(){
+    document.getElementById("bgMusic").play();
+},{once:true});
+
+/* ===== LẬT THIỆP + TIM BAY ĐÚNG GIỮA CARD ===== */
+const card=document.getElementById("loveCard");
+
+card.addEventListener("pointerdown",function(){
+    this.classList.toggle("open");
+    createHearts();
+});
+
+function createHearts(){
+
+    const rect=card.getBoundingClientRect();
+    const centerX=rect.left+rect.width/2;
+    const centerY=rect.top+rect.height/2;
+
+    for(let i=0;i<20;i++){
+        const heart=document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML="❤";
+
+        heart.style.left=(centerX+(Math.random()*150-75))+"px";
+        heart.style.top=centerY+"px";
+        heart.style.fontSize=(Math.random()*20+15)+"px";
+
+        document.querySelector(".wrapper").appendChild(heart);
+
+        setTimeout(()=>{heart.remove();},3000);
+    }
+}
+
+/* ===== HOA RƠI LIÊN TỤC ===== */
+function createFlower(){
+    const flower=document.createElement("div");
+    flower.classList.add("flower");
+    flower.innerHTML="🌸";
+    flower.style.left=Math.random()*100+"vw";
+    flower.style.animationDuration=(Math.random()*3+4)+"s";
+    flower.style.fontSize=(Math.random()*15+15)+"px";
+
+    document.querySelector(".wrapper").appendChild(flower);
+
+    setTimeout(()=>{flower.remove();},7000);
+}
+
+setInterval(createFlower,400);
+
+</script>
+
+</body>
+</html>
