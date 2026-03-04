@@ -20,7 +20,7 @@ body{
     font-family:'Playfair Display',serif;
 }
 
-/* Glow background */
+/* Glow */
 body::before{
     content:"";
     position:absolute;
@@ -176,22 +176,34 @@ body::before{
 
 <script>
 
-/* ===== Custom Name from Query ===== */
+/* ===== Custom Name ===== */
 const params = new URLSearchParams(window.location.search);
 const name = params.get("name");
 if(name){
     document.getElementById("receiverName").innerText = "Gửi " + name + " ❤️";
 }
 
-/* ===== Open Card ===== */
+/* ===== FIX iOS DOUBLE TAP ===== */
 const card = document.getElementById("loveCard");
+let opened = false;
 
-card.addEventListener("click",function(){
-    this.classList.toggle("open");
+function openCard(){
+    if(opened) return;
+    opened = true;
+    card.classList.add("open");
     createHearts();
+}
+
+card.addEventListener("touchstart", function(e){
+    e.preventDefault();
+    openCard();
+},{ passive:false });
+
+card.addEventListener("click", function(){
+    openCard();
 });
 
-/* ===== Hearts Effect ===== */
+/* ===== Hearts ===== */
 function createHearts(){
     for(let i=0;i<15;i++){
         const heart = document.createElement("div");
@@ -206,7 +218,7 @@ function createHearts(){
     }
 }
 
-/* ===== Flower Falling Effect ===== */
+/* ===== Petals ===== */
 function createPetal(){
     const petal=document.createElement("div");
     petal.className="petal";
