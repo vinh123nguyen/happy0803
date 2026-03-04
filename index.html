@@ -8,7 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Pinyon+Script&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
 body{
     height:100vh;
@@ -20,18 +24,18 @@ body{
     font-family:'Playfair Display',serif;
 }
 
-/* Card container */
+/* CARD */
 .card{
     width:340px;
     height:480px;
     position:relative;
     overflow:hidden;
-    border-radius:20px;
-    box-shadow:0 15px 40px rgba(0,0,0,.4);
+    border-radius:24px;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
     cursor:pointer;
 }
 
-/* Faces */
+/* FACES */
 .card-face{
     position:absolute;
     width:100%;
@@ -42,24 +46,24 @@ body{
     justify-content:center;
     align-items:center;
     text-align:center;
-    transition:transform 0.8s ease;
+    transition:transform .8s ease;
 }
 
-/* Front */
+/* FRONT */
 .front{
     background:linear-gradient(145deg,#b31232,#ff4d6d);
     color:white;
     z-index:2;
 }
 
-/* Back */
+/* BACK */
 .back{
     background:#fff0f3;
     color:#7a1c33;
     transform:translateX(100%);
 }
 
-/* Open state */
+/* OPEN STATE */
 .card.open .front{
     transform:translateX(-100%);
 }
@@ -68,12 +72,13 @@ body{
     transform:translateX(0);
 }
 
+/* TEXT */
 .front h1{
     font-size:26px;
     margin-bottom:15px;
 }
 
-.front .signature{
+.signature{
     font-family:'Pinyon Script',cursive;
     font-size:28px;
 }
@@ -88,18 +93,26 @@ body{
     font-size:32px;
 }
 
-/* Hearts */
+/* HEART EFFECT */
 .heart{
     position:absolute;
     font-size:20px;
     animation:floatUp 4s linear forwards;
     pointer-events:none;
 }
+
 @keyframes floatUp{
-    from{transform:translateY(0);opacity:1}
-    to{transform:translateY(-600px);opacity:0}
+    from{
+        transform:translateY(0);
+        opacity:1;
+    }
+    to{
+        transform:translateY(-600px);
+        opacity:0;
+    }
 }
 
+/* MOBILE */
 @media(max-width:420px){
     .card{
         width:90%;
@@ -112,6 +125,7 @@ body{
 <body>
 
 <div class="card" id="loveCard">
+
     <div class="card-face front">
         <h1>💌 Happy 8/03 💌</h1>
         <div class="signature">— With Love 💘</div>
@@ -125,36 +139,45 @@ body{
         </div>
         <div class="lux-sign">— Ly 💋</div>
     </div>
+
 </div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const name = params.get("name");
-if(name){
-    document.getElementById("receiverName").innerText = "Gửi " + name + " ❤️";
-}
+document.addEventListener("DOMContentLoaded", function(){
 
-const card = document.getElementById("loveCard");
-let opened = false;
-
-card.onclick = function(){
-    if(opened) return;
-    opened = true;
-    card.classList.add("open");
-    createHearts();
-};
-
-function createHearts(){
-    for(let i=0;i<12;i++){
-        const heart = document.createElement("div");
-        heart.className="heart";
-        heart.innerHTML="💖";
-        heart.style.left=Math.random()*100+"vw";
-        heart.style.bottom="0px";
-        document.body.appendChild(heart);
-        setTimeout(()=>heart.remove(),4000);
+    // CUSTOM NAME FROM QUERY STRING
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get("name");
+    if(name){
+        document.getElementById("receiverName").innerText = "Gửi " + name + " ❤️";
     }
-}
+
+    const card = document.getElementById("loveCard");
+
+    // CHẠY DUY NHẤT 1 LẦN – KHÔNG THỂ TỰ ĐÓNG
+    card.addEventListener("click", function(){
+
+        card.classList.add("open");
+        createHearts();
+
+    }, { once: true });
+
+    function createHearts(){
+        for(let i=0;i<12;i++){
+            const heart = document.createElement("div");
+            heart.className="heart";
+            heart.innerHTML="💖";
+            heart.style.left = Math.random()*100 + "vw";
+            heart.style.bottom = "0px";
+            document.body.appendChild(heart);
+
+            setTimeout(()=>{
+                heart.remove();
+            },4000);
+        }
+    }
+
+});
 </script>
 
 </body>
