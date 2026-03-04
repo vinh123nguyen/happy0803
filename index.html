@@ -20,68 +20,57 @@ body{
     font-family:'Playfair Display',serif;
 }
 
-/* Glow */
-body::before{
-    content:"";
-    position:absolute;
-    width:500px;
-    height:500px;
-    background:radial-gradient(circle,#ffccd5,transparent);
-    border-radius:50%;
-    filter:blur(120px);
-    animation:pulse 6s infinite alternate;
-}
-@keyframes pulse{
-    from{transform:scale(1)}
-    to{transform:scale(1.2)}
-}
-
-/* Card */
+/* Card container */
 .card{
     width:340px;
     height:480px;
-    perspective:1500px;
-    cursor:pointer;
-    z-index:10;
-}
-
-.card-inner{
-    width:100%;
-    height:100%;
     position:relative;
-    transform-style:preserve-3d;
-    transition:transform 1.2s cubic-bezier(.4,2,.6,1);
+    overflow:hidden;
+    border-radius:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,.4);
+    cursor:pointer;
 }
 
-.card.open .card-inner{
-    transform:rotateY(180deg);
-}
-
+/* Faces */
 .card-face{
     position:absolute;
     width:100%;
     height:100%;
-    backface-visibility:hidden;
-    border-radius:20px;
-    box-shadow:0 15px 40px rgba(0,0,0,.4);
+    padding:30px;
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    padding:30px;
     text-align:center;
+    transition:transform 0.8s ease;
 }
 
 /* Front */
 .front{
     background:linear-gradient(145deg,#b31232,#ff4d6d);
     color:white;
-    gap:15px;
+    z-index:2;
+}
+
+/* Back */
+.back{
+    background:#fff0f3;
+    color:#7a1c33;
+    transform:translateX(100%);
+}
+
+/* Open state */
+.card.open .front{
+    transform:translateX(-100%);
+}
+
+.card.open .back{
+    transform:translateX(0);
 }
 
 .front h1{
     font-size:26px;
-    letter-spacing:2px;
+    margin-bottom:15px;
 }
 
 .front .signature{
@@ -89,21 +78,8 @@ body::before{
     font-size:28px;
 }
 
-/* Back */
-.back{
-    background:#fff0f3;
-    transform:rotateY(180deg);
-    color:#7a1c33;
-}
-
 .back h2{
-    font-size:22px;
     margin-bottom:20px;
-}
-
-.message{
-    font-size:16px;
-    line-height:1.6;
 }
 
 .lux-sign{
@@ -120,23 +96,8 @@ body::before{
     pointer-events:none;
 }
 @keyframes floatUp{
-    from{transform:translateY(0) scale(1);opacity:1}
-    to{transform:translateY(-600px) scale(1.8);opacity:0}
-}
-
-/* Petals */
-.petal{
-    position:absolute;
-    width:12px;
-    height:12px;
-    background:#ff8fab;
-    border-radius:50%;
-    opacity:.7;
-    animation:fall linear forwards;
-}
-@keyframes fall{
-    from{transform:translateY(-50px)}
-    to{transform:translateY(100vh)}
+    from{transform:translateY(0);opacity:1}
+    to{transform:translateY(-600px);opacity:0}
 }
 
 @media(max-width:420px){
@@ -151,78 +112,49 @@ body::before{
 <body>
 
 <div class="card" id="loveCard">
-    <div class="card-inner">
+    <div class="card-face front">
+        <h1>💌 Happy 8/03 💌</h1>
+        <div class="signature">— With Love 💘</div>
+    </div>
 
-        <div class="card-face front">
-            <h1>💌 Happy 8/03 💌</h1>
-            <div class="signature">— With Love 💘</div>
+    <div class="card-face back">
+        <h2 id="receiverName">Gửi em ❤️</h2>
+        <div>
+            Chúc em một ngày 8/03 thật rực rỡ và hạnh phúc.<br><br>
+            Mong rằng mỗi ngày của em đều tràn ngập yêu thương 💖
         </div>
-
-        <div class="card-face back">
-            <h2 id="receiverName">Gửi em ❤️</h2>
-
-            <div class="message">
-                Chúc em một ngày 8/03 thật rực rỡ và hạnh phúc.<br><br>
-                Mong rằng mỗi ngày của em đều tràn ngập yêu thương,
-                nụ cười và những điều ngọt ngào nhất 💖
-            </div>
-
-            <div class="lux-sign">— Ly 💋</div>
-        </div>
-
+        <div class="lux-sign">— Ly 💋</div>
     </div>
 </div>
 
 <script>
-
-/* Custom Name */
 const params = new URLSearchParams(window.location.search);
 const name = params.get("name");
 if(name){
     document.getElementById("receiverName").innerText = "Gửi " + name + " ❤️";
 }
 
-/* FIX iPhone double trigger */
 const card = document.getElementById("loveCard");
 let opened = false;
 
-card.addEventListener("pointerup", function(){
-
+card.onclick = function(){
     if(opened) return;
-
     opened = true;
     card.classList.add("open");
     createHearts();
+};
 
-});
-
-/* Hearts */
 function createHearts(){
-    for(let i=0;i<15;i++){
+    for(let i=0;i<12;i++){
         const heart = document.createElement("div");
         heart.className="heart";
         heart.innerHTML="💖";
         heart.style.left=Math.random()*100+"vw";
         heart.style.bottom="0px";
-        heart.style.fontSize=(15+Math.random()*25)+"px";
         document.body.appendChild(heart);
-
         setTimeout(()=>heart.remove(),4000);
     }
 }
-
-/* Petals */
-function createPetal(){
-    const petal=document.createElement("div");
-    petal.className="petal";
-    petal.style.left=Math.random()*100+"vw";
-    petal.style.animationDuration=(5+Math.random()*5)+"s";
-    document.body.appendChild(petal);
-
-    setTimeout(()=>petal.remove(),10000);
-}
-setInterval(createPetal,500);
-
 </script>
 
 </body>
